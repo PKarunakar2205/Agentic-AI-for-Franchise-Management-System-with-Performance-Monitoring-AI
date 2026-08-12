@@ -6,6 +6,7 @@ import {
   Store,
   Boxes,
   TrendingUp,
+  Users,
   Megaphone,
   Bell,
   FileBarChart,
@@ -20,7 +21,8 @@ import {
   LogOut,
   LogIn,
   UserPlus,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck
 } from "lucide-react";
 
 export default function Layout({ children, dark, setDark }) {
@@ -38,9 +40,10 @@ export default function Layout({ children, dark, setDark }) {
   const navItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/" },
     { label: "Outlet Performance Agent", icon: Store, path: "/" },
+    { label: "AI Audit Agent", icon: ShieldCheck, path: "/audit" },
     { label: "Inventory Agent", icon: Boxes, path: "/inventory" },
-    { label: "Sales Agent", icon: TrendingUp, path: "#" },
-    { label: "Marketing Agent", icon: Megaphone, path: "#" },
+    { label: "Staff Agent", icon: Users, path: "/staff" },
+    { label: "Marketing Agent", icon: Megaphone, path: "/marketing" },
     { label: "Notifications", icon: Bell, path: "#" },
     { label: "Reports", icon: FileBarChart, path: "#" },
     { label: "Settings", icon: Settings, path: "#" },

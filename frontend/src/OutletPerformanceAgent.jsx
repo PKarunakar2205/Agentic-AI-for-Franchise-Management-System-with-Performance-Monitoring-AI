@@ -20,6 +20,7 @@ import {
   UserCheck, ClipboardCheck, PackageSearch, Layers, PieChart as PieChartIcon,
   Radar as RadarIcon, ListChecks, Landmark, BriefcaseBusiness, ArrowRight
 } from "lucide-react";
+import AuditRiskEvidenceCenter from "./components/audit/AuditRiskEvidenceCenter";
 
 /* ------------------------------------------------------------------ */
 /* DUMMY DATA                                                          */
@@ -230,7 +231,7 @@ const sidebarItems = [
   { label: "Dashboard", icon: LayoutDashboard },
   { label: "Outlet Performance Agent", icon: Store, active: true },
   { label: "Inventory Agent", icon: Boxes },
-  { label: "Sales Agent", icon: TrendingUp },
+  { label: "Staff Agent", icon: Users },
   { label: "Marketing Agent", icon: Megaphone },
   { label: "Notifications", icon: Bell },
   { label: "Reports", icon: FileBarChart },
@@ -348,6 +349,7 @@ export default function OutletPerformanceAgent({ embedded = false, dark: propDar
   const [forecastRange, setForecastRange] = useState("30D");
   const [hoveredMarker, setHoveredMarker] = useState(null);
   const [rankTab, setRankTab] = useState("top");
+  const [agentTab, setAgentTab] = useState("overview");
   const pageSize = 5;
 
   useEffect(() => {
@@ -401,7 +403,36 @@ export default function OutletPerformanceAgent({ embedded = false, dark: propDar
 
   const mainDashboard = (
     <div className="space-y-6">
-      {/* ============ HEADER ============ */}
+      {/* ============ TOP LEVEL AGENT TAB SWITCHER ============ */}
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+        <button
+          onClick={() => setAgentTab("overview")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+            agentTab === "overview"
+              ? "bg-blue-600 text-white shadow-md shadow-blue-500/25"
+              : "bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          }`}
+        >
+          <Store size={15} /> Outlet Performance Overview
+        </button>
+        <button
+          onClick={() => setAgentTab("audit")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+            agentTab === "audit"
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md shadow-blue-500/25"
+              : "bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          }`}
+        >
+          <ShieldCheck size={15} /> AI Audit Risk & Evidence Center
+          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+        </button>
+      </div>
+
+      {agentTab === "audit" ? (
+        <AuditRiskEvidenceCenter />
+      ) : (
+        <>
+          {/* ============ HEADER ============ */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
               className="flex flex-col lg:flex-row lg:items-end justify-between gap-4"
             >
@@ -1328,7 +1359,9 @@ export default function OutletPerformanceAgent({ embedded = false, dark: propDar
                 <Sparkles size={11} /> AI Powered
               </span>
             </footer>
-          </div>
+        </>
+      )}
+    </div>
   );
 
   if (embedded) {
