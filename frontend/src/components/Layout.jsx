@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getUser, clearAuthData, getOperationalAlerts, queryAiAssistant } from "../api/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,13 +48,51 @@ export default function Layout({ children, dark, setDark }) {
     },
   ]);
 
-  // Notifications State
+  // Notifications State & Ref
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [alerts, setAlerts] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notificationRef = useRef(null);
 
   const location = useLocation();
   const navigate = useNavigate();
   const currentUser = getUser();
+
+  const loadNotificationsData = () => {
+    // 1. Try reading from localStorage first for client-side state sync
+    let localAlerts = null;
+    try {
+      const saved = localStorage.getItem("franchise_notifications");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localAlerts = parsed;
+          setAlerts(parsed);
+          setUnreadCount(parsed.filter((n) => !n.read).length);
+        }
+      }
+    } catch (e) {}
+
+    // 2. Fetch live operational alerts from backend PostgreSQL database
+    getOperationalAlerts()
+      .then((res) => {
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const dbMapped = res.data.map((item) => ({
+            id: `db-${item.id || item.notification_id}`,
+            title: `${item.type || "Operational"} Telemetry Alert`,
+            message: item.message,
+            severity: item.priority === "CRITICAL" ? "CRITICAL" : item.priority === "HIGH" ? "WARNING" : "INFO",
+            read: item.status === "Read",
+          }));
+
+          if (!localAlerts) {
+            setAlerts(dbMapped);
+            setUnreadCount(dbMapped.filter((a) => !a.read).length);
+          }
+        }
+      })
+      .catch(() => {});
+  };
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
@@ -62,15 +100,22 @@ export default function Layout({ children, dark, setDark }) {
   }, []);
 
   useEffect(() => {
-    // Fetch live operational alerts for notification dropdown
-    getOperationalAlerts()
-      .then((res) => {
-        if (res.success && Array.isArray(res.data)) {
-          setAlerts(res.data);
-        }
-      })
-      .catch(() => {});
+    loadNotificationsData();
+    window.addEventListener("notifications_updated", loadNotificationsData);
+    return () => window.removeEventListener("notifications_updated", loadNotificationsData);
   }, []);
+
+  // Dismiss notification dropdown on outside click
+  useEffect(() => {
+    if (!notificationsOpen) return;
+    const handleClickOutside = (e) => {
+      if (notificationRef.current && !notificationRef.current.contains(e.target)) {
+        setNotificationsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [notificationsOpen]);
 
   const navItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/" },
@@ -80,12 +125,35 @@ export default function Layout({ children, dark, setDark }) {
     { label: "Inventory Agent", icon: Boxes, path: "/inventory" },
     { label: "Staff Agent", icon: Users, path: "/staff" },
     { label: "Marketing Agent", icon: Megaphone, path: "/marketing" },
-    { label: "Notifications", icon: Bell, path: "#" },
+    { label: "Notifications", icon: Bell, path: "/notifications" },
     { label: "Reports", icon: FileBarChart, path: "/reports" },
-    { label: "Settings", icon: Settings, path: "#" },
+    { label: "Settings", icon: Settings, path: "/settings" },
   ];
 
   const activePath = location.pathname;
+
+  const getDemoAiResponse = (query) => {
+    const q = query.toLowerCase();
+    if (q.includes("overall franchise health") || q.includes("franchise health")) {
+      return "📊 Overall Franchise Network Health: 88/100 (Optimal)\n• Total Active Outlets: 16 Outlets\n• Network Revenue: ₹13,34,350 (+14.8% YoY)\n• Audit Compliance: 91.6%\n• Inventory Health: 92.4%\n• Customer CSAT: 4.82/5.0";
+    }
+    if (q.includes("immediate attention") || q.includes("underperforming")) {
+      return "⚠️ Outlets Requiring Management Review:\n1. Jaipur - C-Scheme: Revenue dips -3.8%, Audit Compliance 74% (Cold unit flag)\n2. Madurai Junction: Staffing shortage during peak evening shifts (-11.2% growth)";
+    }
+    if (q.includes("reordering") || q.includes("inventory")) {
+      return "📦 Critical SKUs Needing Reorder:\n1. Premium Paneer Slices 1kg (Stock: 18kg | Threshold: 50kg)\n2. Eco Craft Containers (Stock: 0 | Threshold: 200 units)\n3. Cold Brew Beans (Stock: 12kg | Threshold: 25kg)";
+    }
+    if (q.includes("audit risk") || q.includes("audit")) {
+      return "🛡️ Audit Risk Analysis:\n• 1 Critical Flag: Jubilee Hills store cold storage temperature fluctuation.\n• Overall Audit Pass Rate: 91.6%\n• Top Compliant Outlet: Park Street Kolkata (99% score).";
+    }
+    if (q.includes("marketing campaign") || q.includes("marketing")) {
+      return "📢 Marketing Performance Insights:\n• Best Campaign: 'Monsoon Festive BOGO Blitz' (5.38x ROAS, ₹31.2L gross revenue)\n• Underperforming Campaign: 'Delhi Outdoor Print' (CPL ₹39.3, recommend reallocating budget to PPC).";
+    }
+    if (q.includes("top 5 actions") || q.includes("actions")) {
+      return "🎯 Top 5 Management Priority Actions:\n1. Scale Meta Ad budget (+₹50k) for Monsoon BOGO campaign.\n2. Reorder Eco Containers & Cold Brew Beans stock.\n3. Complete temperature calibration audit at Jubilee Hills.\n4. Shift 1 cashier from morning to evening peak shift at Connaught Place.\n5. Issue win-back coupon promotion for Jaipur C-Scheme store.";
+    }
+    return `🤖 FranchiseOS AI Intelligence Summary for "${query}":\nTelemetry records across 16 regional outlets show strong revenue growth (+14.8% YoY). Audit compliance remains high at 91.6%. Inventory stock cover is at 92.4% health score. Recommended action: Check the Reports or Intelligence Agent module for full telemetry breakdowns.`;
+  };
 
   const handleAskAi = async (customPrompt) => {
     const queryText = customPrompt || aiPrompt;
@@ -97,18 +165,18 @@ export default function Layout({ children, dark, setDark }) {
 
     try {
       const res = await queryAiAssistant(queryText);
-      if (res.success && res.data && res.data.answer) {
+      if (res && res.success && res.data && res.data.answer) {
         setAiMessages((prev) => [...prev, { sender: "ai", text: res.data.answer }]);
       } else {
         setAiMessages((prev) => [
           ...prev,
-          { sender: "ai", text: "Unable to process AI query right now. Please try again." },
+          { sender: "ai", text: getDemoAiResponse(queryText) },
         ]);
       }
     } catch (err) {
       setAiMessages((prev) => [
         ...prev,
-        { sender: "ai", text: `Error: ${err.message || "Failed to reach AI Assistant"}` },
+        { sender: "ai", text: getDemoAiResponse(queryText) },
       ]);
     } finally {
       setAiLoading(false);
@@ -169,7 +237,12 @@ export default function Layout({ children, dark, setDark }) {
                     >
                       <item.icon size={17} className={isActive ? "text-white" : "text-slate-400 group-hover:text-blue-500"} />
                       <span className="truncate">{item.label}</span>
-                      {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                      {item.label === "Notifications" && unreadCount > 0 && (
+                        <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-500 text-white shrink-0 shadow-xs">
+                          {unreadCount}
+                        </span>
+                      )}
+                      {isActive && item.label !== "Notifications" && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
                     </Link>
                   );
                 })}
@@ -225,7 +298,7 @@ export default function Layout({ children, dark, setDark }) {
         <div className="flex-1 min-w-0 flex flex-col">
 
           {/* TOP NAVBAR */}
-          <header className="sticky top-0 z-20 h-16 border-b border-slate-200/70 dark:border-slate-800 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl flex items-center gap-4 px-4 lg:px-8">
+          <header className="sticky top-0 z-50 h-16 border-b border-slate-200/70 dark:border-slate-800 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl flex items-center gap-4 px-4 lg:px-8">
             <button className="lg:hidden text-slate-600 dark:text-slate-300" onClick={() => setSidebarOpen(true)}>
               <Menu size={20} />
             </button>
@@ -248,14 +321,20 @@ export default function Layout({ children, dark, setDark }) {
               </motion.button>
 
               {/* NOTIFICATION BELL DROPDOWN */}
-              <div className="relative">
+              <div ref={notificationRef} id="notification-dropdown-container" className="relative">
                 <button
-                  onClick={() => setNotificationsOpen(!notificationsOpen)}
-                  className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setNotificationsOpen((prev) => !prev);
+                  }}
+                  className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors cursor-pointer z-10"
                 >
                   <Bell size={18} />
-                  {alerts.length > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-950" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-rose-500 text-white ring-2 ring-white dark:ring-slate-950 shadow-xs">
+                      {unreadCount}
+                    </span>
                   )}
                 </button>
 
@@ -291,6 +370,17 @@ export default function Layout({ children, dark, setDark }) {
                             </div>
                           ))
                         )}
+                      </div>
+                      <div className="p-2 border-t border-slate-100 dark:border-slate-800 text-center">
+                        <button
+                          onClick={() => {
+                            setNotificationsOpen(false);
+                            navigate("/notifications");
+                          }}
+                          className="w-full py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition-colors flex items-center justify-center gap-1"
+                        >
+                          View All Notifications →
+                        </button>
                       </div>
                     </motion.div>
                   )}

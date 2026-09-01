@@ -10,6 +10,9 @@ const {
   getCrossModuleIntelligence,
   generateSmartAlerts,
   queryAiAssistant,
+  markAlertAsRead,
+  markAllAlertsAsRead,
+  deleteAlert,
 } = require("../services/intelligenceServices");
 
 async function getFranchiseIntelligenceHandler(req, res) {
@@ -135,6 +138,38 @@ async function queryAiAssistantHandler(req, res) {
   }
 }
 
+async function markAlertAsReadHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const result = await markAlertAsRead(id);
+    return res.status(200).json({ success: true, message: "Alert marked as read", data: result });
+  } catch (err) {
+    console.error("Error in markAlertAsReadHandler:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+async function markAllAlertsAsReadHandler(req, res) {
+  try {
+    const result = await markAllAlertsAsRead();
+    return res.status(200).json({ success: true, message: "All alerts marked as read", data: result });
+  } catch (err) {
+    console.error("Error in markAllAlertsAsReadHandler:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+async function deleteAlertHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const result = await deleteAlert(id);
+    return res.status(200).json({ success: true, message: "Alert deleted", data: result });
+  } catch (err) {
+    console.error("Error in deleteAlertHandler:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
 module.exports = {
   getFranchiseIntelligenceHandler,
   getExecutiveInsightsHandler,
@@ -148,4 +183,7 @@ module.exports = {
   getOperationalAlertsHandler,
   generateSmartAlertsHandler,
   queryAiAssistantHandler,
+  markAlertAsReadHandler,
+  markAllAlertsAsReadHandler,
+  deleteAlertHandler,
 };

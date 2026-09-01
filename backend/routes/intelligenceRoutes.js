@@ -17,6 +17,9 @@ const {
   getOperationalAlertsHandler,
   generateSmartAlertsHandler,
   queryAiAssistantHandler,
+  markAlertAsReadHandler,
+  markAllAlertsAsReadHandler,
+  deleteAlertHandler,
 } = require("../controllers/intelligenceController");
 
 const ALLOWED_ROLES = ["Admin", "Regional Manager", "Outlet Manager", "Staff"];
@@ -141,6 +144,27 @@ router.post(
   authMiddleware,
   authorizeRoles(...ALLOWED_ROLES),
   generateSmartAlertsHandler
+);
+
+router.put(
+  "/alerts/read-all",
+  authMiddleware,
+  authorizeRoles(...ALLOWED_ROLES),
+  markAllAlertsAsReadHandler
+);
+
+router.put(
+  "/alerts/:id/read",
+  authMiddleware,
+  authorizeRoles(...ALLOWED_ROLES),
+  markAlertAsReadHandler
+);
+
+router.delete(
+  "/alerts/:id",
+  authMiddleware,
+  authorizeRoles(...ALLOWED_ROLES),
+  deleteAlertHandler
 );
 
 // 11. AI Assistant Query

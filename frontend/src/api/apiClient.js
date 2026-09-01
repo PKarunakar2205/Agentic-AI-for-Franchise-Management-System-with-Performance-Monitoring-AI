@@ -109,6 +109,18 @@ export const generateSmartAlerts = () =>
   apiFetch("/intelligence/generate-alerts", {
     method: "POST",
   });
+export const markAlertAsReadApi = (id) =>
+  apiFetch(`/intelligence/alerts/${id}/read`, {
+    method: "PUT",
+  });
+export const markAllAlertsAsReadApi = () =>
+  apiFetch("/intelligence/alerts/read-all", {
+    method: "PUT",
+  });
+export const deleteAlertApi = (id) =>
+  apiFetch(`/intelligence/alerts/${id}`, {
+    method: "DELETE",
+  });
 export const queryAiAssistant = (prompt) =>
   apiFetch("/intelligence/assistant", {
     method: "POST",

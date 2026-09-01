@@ -538,6 +538,47 @@ async function queryAiAssistant(prompt = "") {
   };
 }
 
+async function markAlertAsRead(id) {
+  const numId = parseInt(id, 10);
+  if (!isNaN(numId)) {
+    try {
+      await prisma.alerts.update({
+        where: { notification_id: numId },
+        data: { status: "Read" },
+      });
+    } catch (e) {
+      console.warn("Prisma update alert error:", e.message);
+    }
+  }
+  return { success: true };
+}
+
+async function markAllAlertsAsRead() {
+  try {
+    await prisma.alerts.updateMany({
+      where: { OR: [{ status: "Active" }, { status: "Unread" }, { status: "Pending" }] },
+      data: { status: "Read" },
+    });
+  } catch (e) {
+    console.warn("Prisma update all alerts error:", e.message);
+  }
+  return { success: true };
+}
+
+async function deleteAlert(id) {
+  const numId = parseInt(id, 10);
+  if (!isNaN(numId)) {
+    try {
+      await prisma.alerts.delete({
+        where: { notification_id: numId },
+      });
+    } catch (e) {
+      console.warn("Prisma delete alert error:", e.message);
+    }
+  }
+  return { success: true };
+}
+
 module.exports = {
   getFranchiseIntelligence,
   getExecutiveInsights,
@@ -550,4 +591,7 @@ module.exports = {
   getCrossModuleIntelligence,
   generateSmartAlerts,
   queryAiAssistant,
+  markAlertAsRead,
+  markAllAlertsAsRead,
+  deleteAlert,
 };

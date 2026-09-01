@@ -29,10 +29,15 @@ export const CampaignPerformanceTable = ({ onOpenCreateModal }) => {
 
   const filteredCampaigns = useMemo(() => {
     return CAMPAIGN_DATA.filter((cmp) => {
+      const name = cmp.name || '';
+      const manager = cmp.manager || '';
+      const id = cmp.id || '';
+      const search = searchTerm.toLowerCase();
+
       const matchesSearch =
-        cmp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cmp.manager.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cmp.id.toLowerCase().includes(searchTerm.toLowerCase());
+        name.toLowerCase().includes(search) ||
+        manager.toLowerCase().includes(search) ||
+        id.toLowerCase().includes(search);
 
       const matchesType = selectedType === 'All' || cmp.type === selectedType;
       const matchesRegion = selectedRegion === 'All Regions' || cmp.region === selectedRegion;
@@ -216,9 +221,9 @@ export const CampaignPerformanceTable = ({ onOpenCreateModal }) => {
                       {cmp.type}
                     </span>
                   </td>
-                  <td className="py-3.5 px-3 text-slate-300 font-medium">₹{cmp.budget.toLocaleString('en-IN')}</td>
-                  <td className="py-3.5 px-3 text-slate-300 font-medium">₹{cmp.spent.toLocaleString('en-IN')}</td>
-                  <td className="py-3.5 px-3 text-emerald-400 font-bold">₹{cmp.revenue.toLocaleString('en-IN')}</td>
+                  <td className="py-3.5 px-3 text-slate-300 font-medium">₹{(cmp.budget || 0).toLocaleString('en-IN')}</td>
+                  <td className="py-3.5 px-3 text-slate-300 font-medium">₹{(cmp.spent || 0).toLocaleString('en-IN')}</td>
+                  <td className="py-3.5 px-3 text-emerald-400 font-bold">₹{(cmp.revenue || 0).toLocaleString('en-IN')}</td>
                   <td className="py-3.5 px-3">
                     <span className={`font-extrabold ${cmp.roi >= 5.0 ? 'text-indigo-400' : cmp.roi >= 3.5 ? 'text-emerald-400' : 'text-slate-400'}`}>
                       {cmp.roi ? `${cmp.roi}x` : 'N/A'}
@@ -230,8 +235,8 @@ export const CampaignPerformanceTable = ({ onOpenCreateModal }) => {
                     </span>
                   </td>
                   <td className="py-3.5 px-3 text-slate-300">
-                    <div className="font-semibold">{cmp.leadsGenerated.toLocaleString()} leads</div>
-                    <div className="text-[10px] text-slate-500">{cmp.conversions.toLocaleString()} conversions</div>
+                    <div className="font-semibold">{(cmp.leadsGenerated || 0).toLocaleString()} leads</div>
+                    <div className="text-[10px] text-slate-500">{(cmp.conversions || 0).toLocaleString()} conversions</div>
                   </td>
                   <td className="py-3.5 px-3 text-slate-300 font-medium">
                     {cmp.cpl ? `₹${cmp.cpl}` : 'N/A'}

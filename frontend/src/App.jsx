@@ -8,6 +8,9 @@ import AuditAgent from "./pages/AuditAgent";
 import IntelligenceAgent from "./pages/IntelligenceAgent";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
 import ReportsView from "./components/dashboard/ReportsView";
+import NotificationsPage from "./pages/NotificationsPage";
+import SettingsPage from "./pages/SettingsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Layout from "./components/Layout";
@@ -110,6 +113,14 @@ function App() {
           }
         />
         <Route
+          path="/notifications"
+          element={
+            <Layout dark={dark} setDark={setDark}>
+              <NotificationsPage dark={dark} setDark={setDark} />
+            </Layout>
+          }
+        />
+        <Route
           path="/reports"
           element={
             <Layout dark={dark} setDark={setDark}>
@@ -117,9 +128,24 @@ function App() {
             </Layout>
           }
         />
+        <Route
+          path="/settings"
+          element={
+            <Layout dark={dark} setDark={setDark}>
+              <SettingsPage dark={dark} setDark={setDark} />
+            </Layout>
+          }
+        />
 
-        {/* CATCH ALL FALLBACK */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* CATCH ALL 404 FALLBACK */}
+        <Route
+          path="*"
+          element={
+            <Layout dark={dark} setDark={setDark}>
+              <NotFoundPage dark={dark} setDark={setDark} />
+            </Layout>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
