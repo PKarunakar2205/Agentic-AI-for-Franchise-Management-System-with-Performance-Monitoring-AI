@@ -19,7 +19,7 @@ import {
 
 export default function LoginPage({ dark, setDark }) {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("rajesh.kumar@franchiseops.ai");
+  const [email, setEmail] = useState("pkarunakar@franchiseops.ai");
   const [password, setPassword] = useState("password123");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -61,7 +61,7 @@ export default function LoginPage({ dark, setDark }) {
         if (res && res.token) {
           setAuthData(res.token, res.user);
         } else {
-          setAuthData("demo-jwt-token-12345", { full_name: "Rajesh Kumar", email, role: "Enterprise Franchise Director" });
+          setAuthData("demo-jwt-token-12345", { full_name: "P Karunakar", email, role: "Enterprise Franchise Director" });
         }
         setLoading(false);
         setSuccessMsg("Authentication successful! Redirecting to Dashboard...");
@@ -70,7 +70,7 @@ export default function LoginPage({ dark, setDark }) {
         }, 800);
       } catch (err) {
         // Fallback demo authentication when backend is offline
-        setAuthData("demo-jwt-token-12345", { full_name: "Rajesh Kumar", email, role: "Enterprise Franchise Director" });
+        setAuthData("demo-jwt-token-12345", { full_name: "P Karunakar", email, role: "Enterprise Franchise Director" });
         setLoading(false);
         setSuccessMsg("Demo authentication successful! Redirecting to Dashboard...");
         setTimeout(() => {
@@ -122,7 +122,7 @@ export default function LoginPage({ dark, setDark }) {
 
           {/* FORM CARD */}
           <div className="rounded-3xl border border-white/10 bg-slate-900/70 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl relative">
-            
+
             {successMsg && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
@@ -148,9 +148,8 @@ export default function LoginPage({ dark, setDark }) {
                       if (errors.email) setErrors({ ...errors, email: "" });
                     }}
                     placeholder="name@franchise.com"
-                    className={`w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-slate-800/80 border ${
-                      errors.email ? "border-rose-500/80 focus:ring-rose-500/20" : "border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
-                    } text-white placeholder-slate-500 focus:outline-none focus:ring-4 transition-all`}
+                    className={`w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-slate-800/80 border ${errors.email ? "border-rose-500/80 focus:ring-rose-500/20" : "border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
+                      } text-white placeholder-slate-500 focus:outline-none focus:ring-4 transition-all`}
                   />
                 </div>
                 {errors.email && (
@@ -182,9 +181,8 @@ export default function LoginPage({ dark, setDark }) {
                       if (errors.password) setErrors({ ...errors, password: "" });
                     }}
                     placeholder="••••••••"
-                    className={`w-full pl-10 pr-10 py-2.5 text-sm rounded-xl bg-slate-800/80 border ${
-                      errors.password ? "border-rose-500/80 focus:ring-rose-500/20" : "border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
-                    } text-white placeholder-slate-500 focus:outline-none focus:ring-4 transition-all`}
+                    className={`w-full pl-10 pr-10 py-2.5 text-sm rounded-xl bg-slate-800/80 border ${errors.password ? "border-rose-500/80 focus:ring-rose-500/20" : "border-slate-700 focus:border-blue-500 focus:ring-blue-500/20"
+                      } text-white placeholder-slate-500 focus:outline-none focus:ring-4 transition-all`}
                   />
                   <button
                     type="button"

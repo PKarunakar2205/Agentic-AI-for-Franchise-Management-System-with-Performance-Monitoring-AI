@@ -30,12 +30,12 @@ export default function SettingsPage({ dark, setDark }) {
     return saved
       ? JSON.parse(saved)
       : {
-          fullName: "Rajesh Kumar",
-          email: "rajesh.kumar@franchiseops.ai",
-          role: "Enterprise Franchise Director",
-          region: "South India (Chennai, BLR, HYD)",
-          avatarUrl: "",
-        };
+        fullName: "P Karunakar",
+        email: "pkarunakar@franchiseops.ai",
+        role: "Enterprise Franchise Director",
+        region: "South India (Chennai, BLR, HYD)",
+        avatarUrl: "",
+      };
   });
 
   // App Preferences State
@@ -44,11 +44,11 @@ export default function SettingsPage({ dark, setDark }) {
     return saved
       ? JSON.parse(saved)
       : {
-          currency: "INR (₹)",
-          dateFormat: "DD/MM/YYYY",
-          autoRefreshInterval: "30",
-          defaultLandingPage: "Dashboard",
-        };
+        currency: "INR (₹)",
+        dateFormat: "DD/MM/YYYY",
+        autoRefreshInterval: "30",
+        defaultLandingPage: "Dashboard",
+      };
   });
 
   // Notification Preferences State
@@ -57,12 +57,12 @@ export default function SettingsPage({ dark, setDark }) {
     return saved
       ? JSON.parse(saved)
       : {
-          emailDigest: true,
-          smsAlerts: false,
-          anomalyPush: true,
-          auditFailures: true,
-          lowStockWarnings: true,
-        };
+        emailDigest: true,
+        smsAlerts: false,
+        anomalyPush: true,
+        auditFailures: true,
+        lowStockWarnings: true,
+      };
   });
 
   // API Config State
@@ -71,10 +71,10 @@ export default function SettingsPage({ dark, setDark }) {
     return saved
       ? JSON.parse(saved)
       : {
-          apiUrl: "http://localhost:5000/api",
-          environment: "Development (Local)",
-          timeoutMs: "5000",
-        };
+        apiUrl: "http://localhost:5000/api",
+        environment: "Development (Local)",
+        timeoutMs: "5000",
+      };
   });
 
   const showToast = (msg) => {
@@ -164,11 +164,10 @@ export default function SettingsPage({ dark, setDark }) {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2 whitespace-nowrap transition-all ${
-                isActive
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 font-semibold"
-                  : "bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-800"
-              }`}
+              className={`px-4 py-2.5 rounded-xl text-xs font-medium flex items-center gap-2 whitespace-nowrap transition-all ${isActive
+                ? "bg-blue-600 text-white shadow-md shadow-blue-500/20 font-semibold"
+                : "bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-800"
+                }`}
             >
               <IconComp size={15} />
               {t.label}
@@ -300,22 +299,20 @@ export default function SettingsPage({ dark, setDark }) {
                   <button
                     type="button"
                     onClick={() => setDark(true)}
-                    className={`flex-1 p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
-                      dark
-                        ? "bg-slate-800 border-blue-500 text-white shadow-md"
-                        : "bg-slate-100 border-slate-200 text-slate-600"
-                    }`}
+                    className={`flex-1 p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${dark
+                      ? "bg-slate-800 border-blue-500 text-white shadow-md"
+                      : "bg-slate-100 border-slate-200 text-slate-600"
+                      }`}
                   >
                     <Moon size={15} className="text-amber-400" /> Dark Mode
                   </button>
                   <button
                     type="button"
                     onClick={() => setDark(false)}
-                    className={`flex-1 p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
-                      !dark
-                        ? "bg-blue-50 border-blue-500 text-blue-700 shadow-md"
-                        : "bg-slate-900 border-slate-800 text-slate-400"
-                    }`}
+                    className={`flex-1 p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${!dark
+                      ? "bg-blue-50 border-blue-500 text-blue-700 shadow-md"
+                      : "bg-slate-900 border-slate-800 text-slate-400"
+                      }`}
                   >
                     <Sun size={15} className="text-amber-500" /> Light Mode
                   </button>

@@ -71,7 +71,7 @@ export default function Layout({ children, dark, setDark }) {
           setUnreadCount(parsed.filter((n) => !n.read).length);
         }
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // 2. Fetch live operational alerts from backend PostgreSQL database
     getOperationalAlerts()
@@ -91,7 +91,7 @@ export default function Layout({ children, dark, setDark }) {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function Layout({ children, dark, setDark }) {
   return (
     <div className={dark ? "dark" : ""}>
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-300 flex">
-        
+
         {/* ============ SIDEBAR ============ */}
         <AnimatePresence>
           {(sidebarOpen || true) && (
@@ -252,22 +252,20 @@ export default function Layout({ children, dark, setDark }) {
                   <Link
                     to="/login"
                     onClick={() => setSidebarOpen(false)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                      activePath === "/login"
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${activePath === "/login"
                         ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold"
                         : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                    }`}
+                      }`}
                   >
                     <LogIn size={15} /> Sign In
                   </Link>
                   <Link
                     to="/signup"
                     onClick={() => setSidebarOpen(false)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                      activePath === "/signup"
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${activePath === "/signup"
                         ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold"
                         : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                    }`}
+                      }`}
                   >
                     <UserPlus size={15} /> Create Account
                   </Link>
@@ -425,7 +423,7 @@ export default function Layout({ children, dark, setDark }) {
                       className="absolute right-0 mt-2 w-52 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50 text-xs"
                     >
                       <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
-                        <p className="font-semibold text-slate-900 dark:text-white">{currentUser?.full_name || "Rajesh Kumar"}</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">{currentUser?.full_name || "P Karunakar"}</p>
                         <p className="text-slate-400 text-[11px]">{currentUser?.role || "Regional Manager"}</p>
                       </div>
                       <Link
@@ -523,11 +521,10 @@ export default function Layout({ children, dark, setDark }) {
                     className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${
-                        msg.sender === "user"
+                      className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${msg.sender === "user"
                           ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium shadow-md shadow-blue-500/20"
                           : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200/50 dark:border-slate-700/50"
-                      }`}
+                        }`}
                     >
                       {msg.text.split("\n").map((line, i) => (
                         <p key={i} className={i > 0 ? "mt-1" : ""}>{line}</p>
