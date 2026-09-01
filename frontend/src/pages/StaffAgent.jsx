@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiFetch } from "../api/apiClient";
 import {
   LineChart, Line, BarChart, Bar, PieChart as RPieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
@@ -103,6 +104,57 @@ export default function StaffAgent() {
   const [activeSection, setActiveSection] = useState("overview");
   const [staffList, setStaffList] = useState(initialStaff);
   const [swiftLeaves, setSwiftLeaves] = useState(initialSwiftLeaves);
+
+  useEffect(() => {
+    async function loadStaffData() {
+      try {
+        const staffRes = await apiFetch("/staff");
+        if (staffRes.success && Array.isArray(staffRes.data) && staffRes.data.length > 0) {
+          const mappedStaff = staffRes.data.map(item => ({
+            id: item.staff_id,
+            name: item.staff_name || `${item.first_name || ""} ${item.last_name || ""}`.trim(),
+            role: item.role || "Staff Member",
+            outlet: item.outlet?.outlet_name || "Flagship Outlet",
+            status: item.status || "On Shift",
+            shift: item.shift || "Morning (07:00-15:00)",
+            phone: item.phone || "+91 98765 00000",
+            rating: Number(item.rating || 4.5),
+            salesPerHour: item.sales_per_hour ? `₹${item.sales_per_hour}` : "₹2,500",
+            attendance: item.attendance || 95,
+            leavesTaken: item.leaves_taken || 0,
+            avatar: (item.staff_name || "S").split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase(),
+            skills: ["POS", "Customer Service"]
+          }));
+          setStaffList(mappedStaff);
+        }
+
+        const leavesRes = await apiFetch("/staff/leaves");
+        if (leavesRes.success && Array.isArray(leavesRes.data) && leavesRes.data.length > 0) {
+          const mappedLeaves = leavesRes.data.map(leave => ({
+            id: leave.leave_id,
+            code: leave.leave_code,
+            applicant: leave.applicant?.staff_name || `Staff #${leave.applicant_id}`,
+            applicantRole: leave.applicant?.role || "Staff",
+            outlet: leave.outlet?.outlet_name || "Flagship Outlet",
+            leaveType: leave.leave_type,
+            startDate: leave.start_date ? String(leave.start_date).split("T")[0] : "2026-08-20",
+            endDate: leave.end_date ? String(leave.end_date).split("T")[0] : "2026-08-21",
+            totalDays: leave.total_days || 1,
+            reason: leave.reason,
+            status: leave.status,
+            priority: leave.priority || "Normal",
+            aiConflict: leave.ai_conflict,
+            replacementSuggested: leave.replacement_suggested
+          }));
+          setSwiftLeaves(mappedLeaves);
+        }
+      } catch (err) {
+        // preserve initial demo fallback on error
+      }
+    }
+    loadStaffData();
+  }, []);
+
   const [leaveFilter, setLeaveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [outletFilter, setOutletFilter] = useState("all");

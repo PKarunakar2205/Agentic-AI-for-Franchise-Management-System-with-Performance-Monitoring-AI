@@ -1,8 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tag, Sparkles, Clock, Copy, Check, Gift, Zap } from 'lucide-react';
 import { PROMOTIONS_DATA } from '../../mock/marketingData';
+import { apiFetch } from '../../api/apiClient';
 
 export const PromotionCenter = () => {
+  const [promotions, setPromotions] = useState(PROMOTIONS_DATA);
+
+  useEffect(() => {
+    async function loadPromos() {
+      try {
+        const res = await apiFetch('/marketing/promotions');
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped = res.data.map(p => ({
+            id: p.promo_code,
+            code: p.promo_code,
+            title: p.title,
+            discount: `${p.discount_pct}% OFF`,
+            validUntil: p.end_date ? String(p.end_date).split('T')[0] : '2026-12-31',
+            redemptions: p.usage_count || 0,
+            status: p.status || 'Active'
+          }));
+          setPromotions(mapped);
+        }
+      } catch (err) {
+        // preserve initial demo fallback
+      }
+    }
+    loadPromos();
+  }, []);
   const [copiedCode, setCopiedCode] = useState(null);
 
   const handleCopyCode = (code) => {
@@ -27,7 +52,7 @@ export const PromotionCenter = () => {
           <Zap className="w-4 h-4 text-emerald-400" /> Active Promotions & Flash Sales
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {PROMOTIONS_DATA.active.map((prm) => (
+          {(Array.isArray(promotions) ? promotions : PROMOTIONS_DATA.active).map((prm) => (
             <div key={prm.id} className="glass-card rounded-xl p-4 border border-slate-700/60 space-y-3 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">

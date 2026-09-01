@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { apiFetch, setAuthData } from "../api/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -45,21 +46,28 @@ export default function LoginPage({ dark, setDark }) {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
       setLoading(true);
-      // Simulate frontend dummy authentication
-      setTimeout(() => {
+      try {
+        const res = await apiFetch("/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email, password })
+        });
         setLoading(false);
+        setAuthData(res.token, res.user);
         setSuccessMsg("Authentication successful! Redirecting to Dashboard...");
         setTimeout(() => {
           navigate("/");
-        }, 1200);
-      }, 1000);
+        }, 1000);
+      } catch (err) {
+        setLoading(false);
+        setErrors({ general: err.message || "Invalid credentials" });
+      }
     }
   };
 

@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { apiFetch } from '../../api/apiClient';
 import {
   Search, Filter, ArrowUpDown, ChevronLeft, ChevronRight,
   Download, Plus, RefreshCw, Layers, Calendar, User, MapPin

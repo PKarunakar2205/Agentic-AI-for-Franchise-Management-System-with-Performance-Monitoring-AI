@@ -1,16 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import OutletPerformanceAgent from "./OutletPerformanceAgent";
 import InventoryAgent from "./pages/InventoryAgent";
 import MarketingAgent from "./pages/MarketingAgent";
 import StaffAgent from "./pages/StaffAgent";
 import AuditAgent from "./pages/AuditAgent";
+import IntelligenceAgent from "./pages/IntelligenceAgent";
+import ExecutiveDashboard from "./pages/ExecutiveDashboard";
+import ReportsView from "./components/dashboard/ReportsView";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Layout from "./components/Layout";
 
+function getInitialTheme() {
+  const saved = localStorage.getItem("theme");
+  if (saved) {
+    return saved === "dark";
+  }
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
 function App() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(getInitialTheme);
+
+  useEffect(() => {
+    if (dark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [dark]);
 
   return (
     <BrowserRouter>
@@ -24,7 +45,15 @@ function App() {
           path="/"
           element={
             <Layout dark={dark} setDark={setDark}>
-              <OutletPerformanceAgent embedded={true} dark={dark} setDark={setDark} />
+              <ExecutiveDashboard dark={dark} setDark={setDark} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <Layout dark={dark} setDark={setDark}>
+              <ExecutiveDashboard dark={dark} setDark={setDark} />
             </Layout>
           }
         />
@@ -37,10 +66,22 @@ function App() {
           }
         />
         <Route
+          path="/business-intelligence"
+          element={
+            <Layout dark={dark} setDark={setDark}>
+              <IntelligenceAgent dark={dark} setDark={setDark} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/intelligence"
+          element={<Navigate to="/business-intelligence" replace />}
+        />
+        <Route
           path="/audit"
           element={
             <Layout dark={dark} setDark={setDark}>
-              <AuditAgent />
+              <AuditAgent dark={dark} setDark={setDark} />
             </Layout>
           }
         />
@@ -48,7 +89,7 @@ function App() {
           path="/inventory"
           element={
             <Layout dark={dark} setDark={setDark}>
-              <InventoryAgent />
+              <InventoryAgent dark={dark} setDark={setDark} />
             </Layout>
           }
         />
@@ -56,7 +97,7 @@ function App() {
           path="/staff"
           element={
             <Layout dark={dark} setDark={setDark}>
-              <StaffAgent />
+              <StaffAgent dark={dark} setDark={setDark} />
             </Layout>
           }
         />
@@ -64,7 +105,15 @@ function App() {
           path="/marketing"
           element={
             <Layout dark={dark} setDark={setDark}>
-              <MarketingAgent />
+              <MarketingAgent dark={dark} setDark={setDark} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <Layout dark={dark} setDark={setDark}>
+              <ReportsView dark={dark} setDark={setDark} />
             </Layout>
           }
         />

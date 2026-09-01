@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiFetch } from "../api/apiClient";
 import {
   LineChart, Line, BarChart, Bar, PieChart as RPieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
@@ -100,6 +101,33 @@ const velocityData = [
 
 export default function InventoryAgent() {
   const [products, setProducts] = useState(initialProducts);
+
+  useEffect(() => {
+    async function loadInventory() {
+      try {
+        const res = await apiFetch("/inventory");
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped = res.data.map(item => ({
+            id: item.inventory_id,
+            name: item.product_name,
+            sku: item.batch_no || `SKU-${item.inventory_id}`,
+            category: item.category || "General",
+            currentStock: item.current_stock ?? item.quantity ?? 0,
+            reorderLevel: item.reorder_level ?? 20,
+            supplier: item.supplier_name || "Supplier",
+            batchNo: item.batch_no || "B-2026-01",
+            expiryDate: item.expiry_date ? String(item.expiry_date).split("T")[0] : "2026-12-31",
+            status: item.status || "Healthy"
+          }));
+          setProducts(mapped);
+        }
+      } catch (err) {
+        // preserve initial demo fallback on error
+      }
+    }
+    loadInventory();
+  }, []);
+
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [supplierFilter, setSupplierFilter] = useState("All");

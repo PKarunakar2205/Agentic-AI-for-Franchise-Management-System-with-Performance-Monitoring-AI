@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { apiFetch } from "../api/apiClient";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -81,20 +82,33 @@ export default function SignUpPage({ dark, setDark }) {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
       setLoading(true);
-      setTimeout(() => {
+      try {
+        await apiFetch("/auth/signup", {
+          method: "POST",
+          body: JSON.stringify({
+            full_name: formData.fullName,
+            email: formData.email,
+            password: formData.password,
+            role: formData.role,
+            phone: formData.phone
+          })
+        });
         setLoading(false);
         setSuccessMsg("Account created successfully! Redirecting to Sign In...");
         setTimeout(() => {
           navigate("/login");
-        }, 1500);
-      }, 1000);
+        }, 1200);
+      } catch (err) {
+        setLoading(false);
+        setErrors({ general: err.message || "Failed to create account" });
+      }
     }
   };
 
