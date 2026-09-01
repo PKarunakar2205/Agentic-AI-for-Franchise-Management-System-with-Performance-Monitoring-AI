@@ -1,233 +1,133 @@
-# 🤖 FranchiseOps AI
+# 🤖 FranchiseOS AI
 
-## AI-Powered Franchise Operations Management System
+### Agentic AI for Franchise Management System with Performance Monitoring
 
-FranchiseOps AI is an intelligent franchise management and performance monitoring system designed to help organizations monitor outlet performance, inventory, workforce productivity, marketing performance, audit compliance, and operational risks from a centralized dashboard.
+FranchiseOS AI is an intelligent franchise management platform designed to monitor, analyze, and improve franchise operations through multiple specialized AI-powered modules.
 
-The system combines data analytics, monitoring, and AI-driven decision support to help franchise managers make faster and better business decisions.
-
----
-
-# 📌 Project Overview
-
-Managing multiple franchise outlets can be challenging because important information is often distributed across different departments and systems.
-
-FranchiseOps AI provides a centralized analytics dashboard that helps monitor:
-
-- 📊 Outlet Performance
-- 📦 Inventory Intelligence
-- 👥 Workforce Intelligence
-- 📢 Marketing Intelligence
-- 🛡️ Audit & Compliance
-- ⚠️ Risk Monitoring
-- 🤖 AI Decision Support
-
-The system converts operational data into meaningful insights and recommended actions.
+The system provides a centralized dashboard for managing outlet performance, franchise intelligence, inventory, staff, marketing, audits, notifications, reports, and business insights.
 
 ---
 
-# ✨ Key Features
+## 🌐 Live Demo
 
-## 1. Franchise Analytics Dashboard
-
-The main dashboard provides an overall view of franchise performance using important KPIs such as:
-
-- Total Revenue
-- Revenue vs Target
-- Outlet Health Score
-- Inventory Health
-- Workforce Coverage
-- Audit Compliance
-
-Interactive graphs and charts help users quickly understand business performance.
+🚀 **Live Application:**  
+https://agentic-ai-for-franchise-management-jd3n.onrender.com
 
 ---
 
-## 2. Outlet Performance Monitoring
+## ✨ Features
 
-This module monitors the performance of different franchise outlets.
+### 📊 Dashboard
+- Centralized franchise performance overview
+- Business metrics and KPI monitoring
+- Revenue and performance visualization
+- Operational insights
 
-Features include:
+### 🏪 Outlet Performance Agent
+- Monitor outlet-level performance
+- Track revenue and operational metrics
+- Compare outlet performance
+- Identify high-performing and low-performing outlets
 
-- Outlet Health Score
-- Network Health Distribution
-- Top Performing Outlets
-- At-Risk Outlets
-- Regional Performance Analysis
+### 🧠 Franchise Intelligence
+- AI-driven business insights
+- Performance analysis
+- Trend monitoring
+- Strategic recommendations
 
-This helps management identify high-performing and underperforming outlets.
+### 🛡️ AI Audit Agent
+- Audit compliance monitoring
+- Critical finding detection
+- Compliance score tracking
+- Audit insights and recommendations
 
----
+### 📦 Inventory Agent
+- Inventory monitoring
+- Stock analysis
+- Inventory health tracking
+- Operational alerts
 
-## 3. Inventory Intelligence
+### 👥 Staff Agent
+- Staff performance monitoring
+- Workforce insights
+- Operational metrics and analytics
 
-The inventory module helps monitor stock availability and stock health.
+### 📢 Marketing Agent
+- Campaign performance monitoring
+- Active and completed campaign tracking
+- Marketing ROI analysis
+- Customer acquisition metrics
+- Budget and promotion analysis
 
-Features include:
+### 🔔 Notifications
+- Centralized notification management
+- Operational alerts
+- Important business updates
+- Notification status tracking
 
-- Stock Health Analysis
-- Stock Cover
-- Low Stock Alerts
-- Predicted Stockouts
-- Product Category Performance
+### 📑 Reports
+- Executive business reports
+- Regional sales summaries
+- Revenue and transaction analytics
+- CSV report export functionality
 
-This helps reduce inventory shortages and improve stock planning.
-
----
-
-## 4. Workforce Intelligence
-
-This module monitors employee attendance and productivity.
-
-Features include:
-
-- Attendance Tracking
-- Shift Coverage
-- Productivity Analysis
-- Workforce Performance Trends
-- Staff Coverage Alerts
-
-Managers can identify staffing gaps and improve workforce planning.
-
----
-
-## 5. Marketing Intelligence
-
-The marketing module analyzes campaign performance and revenue generation.
-
-Features include:
-
-- Marketing Spend
-- Revenue by Channel
-- Return on Advertising Spend
-- Campaign Performance
-- Conversion Analysis
-
-This helps identify which marketing channels and campaigns provide better results.
-
----
-
-## 6. Audit & Compliance
-
-This module monitors compliance performance across franchise outlets.
-
-Features include:
-
-- Compliance Score
-- Open Issues
-- Safety Monitoring
-- Hygiene Monitoring
-- Process Compliance
-- Cash Compliance
-- Pending Checks
-
-This helps managers identify and resolve operational issues.
+### ⚙️ Settings
+- Application settings management
+- User preferences
+- System configuration
 
 ---
 
-## 7. AI Decision Support Center
+## 🖥️ Application Modules
 
-The AI Decision Support Center analyzes different operational signals and provides recommended actions.
-
-Examples include:
-
-- Stockout Risk Detection
-- Staff Coverage Warnings
-- Marketing Opportunities
-- Audit Exceptions
-
-The system provides recommendations such as:
-
-- Transfer Stock
-- Adjust Workforce Roster
-- Scale Marketing Campaigns
-- Close Audit Gaps
+| Module | Description |
+|---|---|
+| 📊 Dashboard | Overall franchise performance overview |
+| 🏪 Outlet Performance Agent | Outlet-level analytics and monitoring |
+| 🧠 Franchise Intelligence | AI-powered business insights |
+| 🛡️ AI Audit Agent | Compliance and audit monitoring |
+| 📦 Inventory Agent | Inventory and stock analysis |
+| 👥 Staff Agent | Workforce performance insights |
+| 📢 Marketing Agent | Campaign and ROI analytics |
+| 🔔 Notifications | Business alerts and updates |
+| 📑 Reports | Executive reporting and CSV export |
+| ⚙️ Settings | Application configuration |
 
 ---
 
-# 📊 Dashboard Output
+## 🛠️ Technologies Used
 
-## 🏠 Franchise Analytics Dashboard
+### Frontend
+- React
+- JavaScript
+- HTML5
+- CSS3
+- Vite
 
-![Dashboard Overview](screenshots/dashboard-overview.png)
-
-The main dashboard provides a complete overview of franchise performance using KPIs, charts, graphs, and performance indicators.
-
----
-
-## 📈 Outlet Performance
-
-![Outlet Performance](screenshots/outlet-performance.png)
-
-This section displays outlet health distribution, top-performing outlets, and at-risk outlets.
+### Development & Deployment
+- Git
+- GitHub
+- Render
 
 ---
 
-## 📦 Inventory Intelligence
-
-![Inventory Intelligence](screenshots/inventory-intelligence.png)
-
-The inventory dashboard helps monitor stock health, stock cover, alerts, and potential stockouts.
-
----
-
-## 👥 Workforce Intelligence
-
-![Workforce Intelligence](screenshots/workforce-intelligence.png)
-
-This section analyzes employee attendance, productivity, and workforce coverage.
-
----
-
-## 📢 Marketing Intelligence
-
-![Marketing Intelligence](screenshots/marketing-intelligence.png)
-
-The marketing dashboard compares marketing spend and generated revenue across different channels.
-
----
-
-## 🛡️ Audit & Compliance
-
-![Audit Compliance](screenshots/audit-compliance.png)
-
-This section monitors compliance scores, open issues, and pending operational checks.
-
----
-
-## 🤖 AI Decision Support Center
-
-![AI Decision Support](screenshots/ai-decision-support.png)
-
-The AI Decision Support Center detects operational risks and provides recommended actions.
-
----
-
-# 🏗️ System Architecture
-
-The system follows a frontend-backend architecture.
+## 📂 Project Structure
 
 ```text
-                ┌─────────────────────┐
-                │    User Dashboard   │
-                │      Frontend       │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │      Backend API    │
-                │ Business Logic      │
-                │ Data Processing     │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │      Database       │
-                │ Franchise Data      │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │   AI/Agent Layer    │
-                │ Insights & Actions  │
-                └─────────────────────┘
+FranchiseOpsAI/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── data/
+│   │   └── App.jsx
+│   │
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/
+│
+├── market agent/
+│
+└── README.md
