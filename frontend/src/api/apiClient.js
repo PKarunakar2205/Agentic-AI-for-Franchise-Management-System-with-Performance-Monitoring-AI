@@ -127,3 +127,91 @@ export const queryAiAssistant = (prompt) =>
     body: JSON.stringify({ prompt }),
   });
 
+// ==========================================
+// NOTIFICATION & WORKFLOW MODULE API METHODS
+// ==========================================
+
+export const getNotificationsApi = (filters = {}) => {
+  const query = new URLSearchParams();
+  if (filters.priority) query.append("priority", filters.priority);
+  if (filters.status) query.append("status", filters.status);
+  if (filters.channel) query.append("channel", filters.channel);
+  if (filters.eventType) query.append("eventType", filters.eventType);
+  if (filters.outlet_id) query.append("outlet_id", filters.outlet_id);
+  if (filters.search) query.append("search", filters.search);
+  return apiFetch(`/notifications?${query.toString()}`);
+};
+
+export const getNotificationByIdApi = (id) => apiFetch(`/notifications/${id}`);
+
+export const createNotificationApi = (data) =>
+  apiFetch("/notifications", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const acknowledgeNotificationApi = (id, actorName) =>
+  apiFetch(`/notifications/${id}/acknowledge`, {
+    method: "PATCH",
+    body: JSON.stringify({ actorName }),
+  });
+
+export const resolveNotificationApi = (id, actorName) =>
+  apiFetch(`/notifications/${id}/resolve`, {
+    method: "PATCH",
+    body: JSON.stringify({ actorName }),
+  });
+
+export const escalateNotificationApi = (id, reason, actorName) =>
+  apiFetch(`/notifications/${id}/escalate`, {
+    method: "PATCH",
+    body: JSON.stringify({ reason, actorName }),
+  });
+
+export const deleteNotificationApi = (id) =>
+  apiFetch(`/notifications/${id}`, {
+    method: "DELETE",
+  });
+
+export const getNotificationAnalyticsApi = () => apiFetch("/notifications/analytics");
+
+export const triggerWorkflowEngineApi = () =>
+  apiFetch("/notifications/trigger-engine", {
+    method: "POST",
+  });
+
+export const getActionPlansApi = (filters = {}) => {
+  const query = new URLSearchParams();
+  if (filters.status) query.append("status", filters.status);
+  if (filters.priority) query.append("priority", filters.priority);
+  if (filters.outlet_id) query.append("outlet_id", filters.outlet_id);
+  return apiFetch(`/notifications/action-plans?${query.toString()}`);
+};
+
+export const getActionPlanByIdApi = (id) => apiFetch(`/notifications/action-plans/${id}`);
+
+export const createActionPlanApi = (data) =>
+  apiFetch("/notifications/action-plans", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const updateActionPlanApi = (id, data) =>
+  apiFetch(`/notifications/action-plans/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+
+export const createActionPlanTaskApi = (actionPlanId, taskData) =>
+  apiFetch(`/notifications/action-plans/${actionPlanId}/tasks`, {
+    method: "POST",
+    body: JSON.stringify(taskData),
+  });
+
+export const updateActionPlanTaskApi = (taskId, taskData) =>
+  apiFetch(`/notifications/action-plans/tasks/${taskId}`, {
+    method: "PATCH",
+    body: JSON.stringify(taskData),
+  });
+
+

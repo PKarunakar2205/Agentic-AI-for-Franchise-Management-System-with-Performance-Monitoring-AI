@@ -20,6 +20,8 @@ model User {
   updated_at         DateTime @default(now()) @updatedAt
 
   assigned_outlet Outlet? @relation(fields: [assigned_outlet_id], references: [outlet_id])
+  notifications   Notification[]
+  action_plans    ActionPlan[]
 
   @@map("users")
 }
@@ -54,6 +56,8 @@ model Outlet {
   swift_leaves    SwiftLeave[]
   expenses        Expense[]
   sales           Sales[]
+  notifications   Notification[]
+  action_plans    ActionPlan[]
 
   @@map("outlets")
 }
@@ -307,6 +311,106 @@ model alerts {
 
   @@map("alerts")
 }
+
+model Notification {
+  id               Int      @id @default(autoincrement())
+  title            String   @db.VarChar(200)
+  message          String   @db.Text
+  event_type       String   @default("GENERAL") @db.VarChar(50)
+  priority         String   @default("MEDIUM") @db.VarChar(20)
+  channel          String   @default("IN_APP") @db.VarChar(20)
+  outlet_id        Int?
+  outlet_name      String?  @db.VarChar(150)
+  recipient_id     Int?
+  recipient_role   String?  @db.VarChar(50)
+  status           String   @default("NEW") @db.VarChar(30)
+  acknowledged     Boolean  @default(false)
+  acknowledged_at  DateTime?
+  due_at           DateTime?
+  resolved_at      DateTime?
+  escalated_at     DateTime?
+  escalation_level Int      @default(0)
+  metadata         String?  @db.Text
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now()) @updatedAt
+
+  outlet       Outlet?                  @relation(fields: [outlet_id], references: [outlet_id])
+  recipient    User?                    @relation(fields: [recipient_id], references: [user_id])
+  action_plans ActionPlan[]
+  escalations  NotificationEscalation[]
+
+  @@map("notifications")
+}
+
+model NotificationEscalation {
+  id               Int      @id @default(autoincrement())
+  notification_id  Int
+  escalation_level Int      @default(1)
+  previous_owner   String?  @db.VarChar(100)
+  escalated_to     String?  @db.VarChar(100)
+  reason           String   @db.Text
+  status           String   @default("ESCALATED") @db.VarChar(30)
+  timestamp        DateTime @default(now())
+
+  notification Notification @relation(fields: [notification_id], references: [id], onDelete: Cascade)
+
+  @@map("notification_escalations")
+}
+
+model ActionPlan {
+  id                     Int       @id @default(autoincrement())
+  title                  String    @db.VarChar(200)
+  description            String    @db.Text
+  source_notification_id Int?
+  outlet_id              Int?
+  outlet_name            String?   @db.VarChar(150)
+  priority               String    @default("MEDIUM") @db.VarChar(20)
+  owner_id               Int?
+  owner_name             String?   @db.VarChar(100)
+  status                 String    @default("OPEN") @db.VarChar(30)
+  progress               Int       @default(0)
+  due_date               DateTime?
+  created_at             DateTime  @default(now())
+  completed_at           DateTime?
+  verified_at            DateTime?
+
+  source_notification Notification?    @relation(fields: [source_notification_id], references: [id])
+  outlet              Outlet?          @relation(fields: [outlet_id], references: [outlet_id])
+  owner               User?            @relation(fields: [owner_id], references: [user_id])
+  tasks               ActionPlanTask[]
+
+  @@map("action_plans")
+}
+
+model ActionPlanTask {
+  id             Int       @id @default(autoincrement())
+  action_plan_id Int
+  title          String    @db.VarChar(200)
+  description    String?   @db.Text
+  assigned_to    String?   @db.VarChar(100)
+  due_date       DateTime?
+  status         String    @default("PENDING") @db.VarChar(30)
+  comments       String?   @db.Text
+  created_at     DateTime  @default(now())
+  completed_at   DateTime?
+
+  action_plan ActionPlan @relation(fields: [action_plan_id], references: [id], onDelete: Cascade)
+
+  @@map("action_plan_tasks")
+}
+
+model NotificationAudit {
+  id              Int      @id @default(autoincrement())
+  notification_id Int?
+  action_plan_id  Int?
+  event           String   @db.VarChar(100)
+  actor           String   @db.VarChar(100)
+  details         String   @db.Text
+  timestamp       DateTime @default(now())
+
+  @@map("notification_audits")
+}
+
 
 
 

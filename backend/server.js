@@ -11,6 +11,8 @@ const staffRoutes = require("./routes/staffRoutes");
 const auditRoutes = require("./routes/auditRoutes");
 const marketingRoutes = require("./routes/marketingRoutes");
 const intelligenceRoutes = require("./routes/intelligenceRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const { startWorkflowDaemon } = require("./services/workflowEngine");
 
 const app = express();
 
@@ -25,12 +27,14 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/audit", auditRoutes);
 app.use("/api/marketing", marketingRoutes);
 app.use("/api/intelligence", intelligenceRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server Running on Port ${PORT}`);
+    startWorkflowDaemon(60000);
   });
 }
 

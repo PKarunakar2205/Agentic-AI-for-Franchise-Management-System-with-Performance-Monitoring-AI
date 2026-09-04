@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getUser, clearAuthData, getOperationalAlerts, queryAiAssistant } from "../api/apiClient";
+import { getUser, clearAuthData, getOperationalAlerts, getNotificationsApi, queryAiAssistant } from "../api/apiClient";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -59,39 +59,42 @@ export default function Layout({ children, dark, setDark }) {
   const currentUser = getUser();
 
   const loadNotificationsData = () => {
-    // 1. Try reading from localStorage first for client-side state sync
-    let localAlerts = null;
-    try {
-      const saved = localStorage.getItem("franchise_notifications");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          localAlerts = parsed;
-          setAlerts(parsed);
-          setUnreadCount(parsed.filter((n) => !n.read).length);
-        }
-      }
-    } catch (e) { }
-
-    // 2. Fetch live operational alerts from backend PostgreSQL database
-    getOperationalAlerts()
+    // 1. Fetch live operational notifications from PostgreSQL backend
+    getNotificationsApi()
       .then((res) => {
         if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
           const dbMapped = res.data.map((item) => ({
-            id: `db-${item.id || item.notification_id}`,
-            title: `${item.type || "Operational"} Telemetry Alert`,
+            id: item.id,
+            title: item.title,
             message: item.message,
+            outletName: item.outlet_name || "Franchise Store",
             severity: item.priority === "CRITICAL" ? "CRITICAL" : item.priority === "HIGH" ? "WARNING" : "INFO",
-            read: item.status === "Read",
+            read: item.acknowledged || item.status === "ACKNOWLEDGED" || item.status === "RESOLVED",
+            priority: item.priority,
+            status: item.status,
+            channel: item.channel,
           }));
 
-          if (!localAlerts) {
+          setAlerts(dbMapped);
+          setUnreadCount(dbMapped.filter((a) => !a.read).length);
+        }
+      })
+      .catch(() => {
+        // Fallback to legacy alerts endpoint if needed
+        getOperationalAlerts().then((res) => {
+          if (res && res.success && Array.isArray(res.data)) {
+            const dbMapped = res.data.map((item) => ({
+              id: `db-${item.id || item.notification_id}`,
+              title: `${item.type || "Operational"} Alert`,
+              message: item.message,
+              severity: item.priority === "CRITICAL" ? "CRITICAL" : "WARNING",
+              read: item.status === "Read",
+            }));
             setAlerts(dbMapped);
             setUnreadCount(dbMapped.filter((a) => !a.read).length);
           }
-        }
-      })
-      .catch(() => { });
+        }).catch(() => {});
+      });
   };
 
   useEffect(() => {
@@ -101,8 +104,13 @@ export default function Layout({ children, dark, setDark }) {
 
   useEffect(() => {
     loadNotificationsData();
+    // Live update polling every 10 seconds for real-time telemetry updates
+    const pollTimer = setInterval(loadNotificationsData, 10000);
     window.addEventListener("notifications_updated", loadNotificationsData);
-    return () => window.removeEventListener("notifications_updated", loadNotificationsData);
+    return () => {
+      clearInterval(pollTimer);
+      window.removeEventListener("notifications_updated", loadNotificationsData);
+    };
   }, []);
 
   // Dismiss notification dropdown on outside click
@@ -125,7 +133,7 @@ export default function Layout({ children, dark, setDark }) {
     { label: "Inventory Agent", icon: Boxes, path: "/inventory" },
     { label: "Staff Agent", icon: Users, path: "/staff" },
     { label: "Marketing Agent", icon: Megaphone, path: "/marketing" },
-    { label: "Notifications", icon: Bell, path: "/notifications" },
+    { label: "Notifications & Workflows", icon: Bell, path: "/notifications" },
     { label: "Reports", icon: FileBarChart, path: "/reports" },
     { label: "Settings", icon: Settings, path: "/settings" },
   ];
